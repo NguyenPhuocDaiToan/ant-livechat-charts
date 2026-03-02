@@ -1,0 +1,94 @@
+# ==========================================================
+# Ant-Livechat (BeeIQ) - Helm Configuration
+# ==========================================================
+
+# Số lượng bản sao (Pod) chạy trên cluster
+replicaCount: 1
+
+# Cấu hình Image đã được thay đổi sang repo của AntBuddy
+image:
+  repository: antbuddyinc/ant-livechat
+  pullPolicy: IfNotPresent
+  # Tag phiên bản sản phẩm của bạn
+  tag: "prod_release1.0.0"
+  command: ["/entrypoint.sh"]
+  args: ["run"]
+
+imagePullSecrets: []
+
+# Ghi đè tên hiển thị trong k8s để đồng nhất thương hiệu
+nameOverride: "ant-livechat"
+fullnameOverride: "ant-livechat"
+
+# Cấu hình ServiceAccount
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 4000
+
+# Cấu hình Ingress - Thiết lập cho domain chat-sdk-omni.frt.vn
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # Cấu hình quan trọng để duy trì kết nối WebSocket (Phoenix Channels)
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  hosts:
+    - host: chat-sdk-omni.frt.vn
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# Cấu hình Istio VirtualService
+istio:
+  enabled: true
+  gateway: "longchau-gateway"
+  hosts:
+    - "chat-sdk-omni.frt.vn"
+
+# Giới hạn tài nguyên (Mặc định để trống, có thể tùy chỉnh sau)
+resources: {}
+
+# Cấu hình tự động mở rộng Pod
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: null
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Cấu hình môi trường (ConfigMap)
+configMap:
+  REQUIRE_DB_SSL: "false"
+  # Trỏ về domain chính thức của FRT Long Châu
+  BACKEND_URL: "https://chat-sdk-omni.frt.vn"
+
+# Các chuỗi bảo mật (Secrets)
+secrets:
+  # Chìa khóa bảo mật của Phoenix (Giữ nguyên chuỗi bạn đã cung cấp)
+  SECRET_KEY_BASE: "dvPPvOjpgX2Wk8Y3ONrqWsgM9ZtU4sSrs4l/5CFD1sLm4H+CjLU+EidjNGuSz7bz"
+  
+  # Đường dẫn kết nối Database PostgreSQL (Khách hàng/Bạn cần thay USER:PASS@HOST/DB_NAME)
+  DATABASE_URL: "ecto://USER:PASS@HOST/DB_NAME"
+
+# Tự động chạy Migration để cập nhật database khi deploy
+migration:
+  enabled: true
+
+# Tự động khởi tạo DB nếu chưa có
+initialize_database:
+  enabled: true

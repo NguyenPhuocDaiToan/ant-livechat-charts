@@ -1,0 +1,32 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "ant-livechat.fullname" . }}-migration
+  labels:
+    {{- include "ant-livechat.labels" $ | nindent 4 }}
+  annotations:
+    "helm.sh/hook-delete-policy": "hook-succeeded"
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      name: {{ template "ant-livechat.fullname" . }}-migration
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ template "ant-livechat.fullname" . }}-migration
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["/entrypoint.sh", "db", "migrate"]
+          {{- if or (.Values.configMap) (.Values.secrets) }}
+          envFrom:
+          {{- if .Values.configMap }}
+            - configMapRef:
+                name: {{ template "ant-livechat.fullname" . }}
+          {{- end }}
+          {{- if .Values.secrets }}
+            - secretRef:
+                name: {{ template "ant-livechat.fullname" . }}
+          {{- end }}
+          {{- end }}
+{{- end }}
