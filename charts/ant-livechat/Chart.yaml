@@ -4,10 +4,10 @@ description: Hệ thống Livechat BeeIQ triển khai trên nền tảng Kuberne
 type: application
 
 # Đây là phiên bản của gói Helm Chart
-version: 1.0.1
+version: 1.0.2
 
 # Đây là phiên bản của ứng dụng
-appVersion: "1.0.1"
+appVersion: "1.0.2"
 
 maintainers:
   - name: Thông Nguyễn
