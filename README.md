@@ -3,7 +3,7 @@ Deploy the Ant Livechat application to Kubernetes
 
 ## TL;DR
 ```
-$ helm repo add ant-livechat https://antbuddy.github.io/ant-livechat-charts/
+$ helm repo add ant-livechat https://nguyenphuocdaitoan.github.io/ant-livechat-charts
 $ helm repo update
 ```
 
@@ -14,5 +14,5 @@ $ helm repo update
 
 ### Add Repo
 ```
-$ helm repo add ant-livechat https://antbuddy.github.io/ant-livechat-charts/
+$ helm repo add ant-livechat https://nguyenphuocdaitoan.github.io/ant-livechat-charts
 ```
