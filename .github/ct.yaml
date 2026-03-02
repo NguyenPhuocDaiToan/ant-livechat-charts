@@ -1,9 +1,0 @@
-chart-repos:
-  - antbuddy=https://antbuddy.github.io/ant-livechat-charts/
-  - bitnami=https://charts.bitnami.com/bitnami
-helm-extra-args: --timeout 300s
-check-version-increment: true
-debug: false
-target-branch: main
-namespace: default
-release-label: "app.kubernetes.io/instance"
